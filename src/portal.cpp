@@ -39,19 +39,16 @@ namespace NFCAlarm
          */
         void handleRoot()
         {
+            extern const uint8_t index_html_start[] asm("_binary_data_index_html_start");
+
             // -- Let IotWebConf test and handle captive portal requests.
             if (iotWebConf.handleCaptivePortal())
             {
                 // -- Captive portal request were already served.
                 return;
             }
-            
-            String s = "<!DOCTYPE html><html lang=\"en\"><head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1, user-scalable=no\"/>";
-            s += "<title>NFCAlarm</title></head><body>";
-            s += "Go to <a href='config'>configure page</a> to change settings.";
-            s += "</body></html>\n";
 
-            server.send(200, "text/html", s);
+            server.send(200, "text/html", (char*)&index_html_start[0]);
         }
    }
 }
