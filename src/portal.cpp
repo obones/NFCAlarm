@@ -1,5 +1,6 @@
 #include <IotWebConf.h>
 #include "config.h"
+#include "network.h"
 
 namespace NFCAlarm
 {
@@ -13,6 +14,7 @@ namespace NFCAlarm
 
         // -- Method declarations.
         void handleRoot();
+        void configSaved();
 
         DNSServer dnsServer;
         WebServer server(80);
@@ -35,6 +37,8 @@ namespace NFCAlarm
             openHabGroup.addItem(&alarmItemName);
 
             iotWebConf.addParameterGroup(&openHabGroup);
+
+            iotWebConf.setConfigSavedCallback(&configSaved);
 
             // -- Initializing the configuration.
             iotWebConf.init();
@@ -73,6 +77,11 @@ namespace NFCAlarm
             indexContent->replace(F("%cur_time%"), &localTime[0]);
 
             server.send(200, "text/html", indexContent->c_str());
+        }
+
+        void configSaved()
+        {
+            Network::reconnectServices();
         }
    }
 }

@@ -5,6 +5,8 @@ namespace NFCAlarm
     namespace Network
     {
         void setup();
+
+        void reconnectServices();
     }
 }
 #endif
