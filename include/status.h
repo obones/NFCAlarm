@@ -9,6 +9,7 @@ namespace NFCAlarm
     {
         extern struct timeval TimeAtBoot;
         extern bool Connected;
+        extern String AlarmState;
 
         void setup();
 
