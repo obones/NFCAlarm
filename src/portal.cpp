@@ -18,6 +18,9 @@ namespace NFCAlarm
         WebServer server(80);
 
         IotWebConf iotWebConf(thingName, &dnsServer, &server, wifiInitialApPassword);
+
+        auto ntpServerName = iotwebconf::TextParameter("NTP server", "ntpserver", Config::NTPServerName, sizeof(Config::NTPServerName));
+
         auto openHabGroup = iotwebconf::ParameterGroup("openhab", "openHAB parameters");
         auto openHabServerName = iotwebconf::TextParameter("Server name", "openHabServerName", Config::OpenHabServerName, sizeof(Config::OpenHabServerName));
         auto openHabApiKey = iotwebconf::TextParameter("API Key", "openhabapikey", Config::OpenHabAPIKey, sizeof(Config::OpenHabAPIKey));
@@ -26,6 +29,8 @@ namespace NFCAlarm
         void setup()
         {
             // -- Setting up parameters
+            iotWebConf.addSystemParameter(&ntpServerName);
+
             openHabGroup.addItem(&openHabServerName);
             openHabGroup.addItem(&alarmItemName);
 
