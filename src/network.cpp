@@ -47,6 +47,7 @@ namespace NFCAlarm
             sntp_set_time_sync_notification_cb(ntpUpdateCallback);
 
             configTzTime("UTC", Config::NTPServerName);
+            Status::Connected = true;
         }
 
         void eventHandler_WiFiStationGotIp(WiFiEvent_t event, WiFiEventInfo_t info) 
@@ -58,6 +59,7 @@ namespace NFCAlarm
         void eventHandler_WiFiStationLostIp(WiFiEvent_t event, WiFiEventInfo_t info) 
         {
             Serial.println("WiFi Client has lost its IP");
+            Status::Connected = false;
         }
 
         void setup()
