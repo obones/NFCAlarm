@@ -34,6 +34,7 @@ namespace NFCAlarm
             iotWebConf.addSystemParameter(&ntpServerName);
 
             openHabGroup.addItem(&openHabServerName);
+            openHabGroup.addItem(&openHabApiKey);
             openHabGroup.addItem(&alarmItemName);
 
             iotWebConf.addParameterGroup(&openHabGroup);
