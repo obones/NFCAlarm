@@ -1,4 +1,5 @@
 #include <IotWebConf.h>
+#include "config.h"
 
 namespace NFCAlarm
 {
@@ -17,9 +18,19 @@ namespace NFCAlarm
         WebServer server(80);
 
         IotWebConf iotWebConf(thingName, &dnsServer, &server, wifiInitialApPassword);
+        auto openHabGroup = iotwebconf::ParameterGroup("openhab", "openHAB parameters");
+        auto openHabServerName = iotwebconf::TextParameter("Server name", "openHabServerName", Config::OpenHabServerName, sizeof(Config::OpenHabServerName));
+        auto openHabApiKey = iotwebconf::TextParameter("API Key", "openhabapikey", Config::OpenHabAPIKey, sizeof(Config::OpenHabAPIKey));
+        auto alarmItemName = iotwebconf::TextParameter("Alarm item name", "alarmItemName", Config::AlarmItemName, sizeof(Config::AlarmItemName), "Alarm");
 
         void setup()
         {
+            // -- Setting up parameters
+            openHabGroup.addItem(&openHabServerName);
+            openHabGroup.addItem(&alarmItemName);
+
+            iotWebConf.addParameterGroup(&openHabGroup);
+
             // -- Initializing the configuration.
             iotWebConf.init();
 
