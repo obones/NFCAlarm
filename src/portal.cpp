@@ -71,7 +71,7 @@ namespace NFCAlarm
             char localTime[25] = "Failed to obtain time";
             struct tm timeInfo;
             if (getLocalTime(&timeInfo))
-                strftime(localTime, sizeof(localTime), "%Y-%m-%d %H:%M:%S", &timeInfo);
+                strftime(localTime, sizeof(localTime), "%Y-%m-%d %H:%M:%S %Z", &timeInfo);
 
             auto indexContent = new String((char*)&index_html_start[0]);
             indexContent->replace(F("%cur_time%"), &localTime[0]);

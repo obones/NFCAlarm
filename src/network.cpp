@@ -26,9 +26,10 @@ namespace NFCAlarm
                 timeinfo = localtime(&newTime->tv_sec);
             }
 
-            Serial.printf_P(PSTR("Current time is %04i-%02i-%02i %02i:%02i:%02i\r\n"),
-                            timeinfo->tm_year+1900, timeinfo->tm_mon+1, timeinfo->tm_mday,
-                            timeinfo->tm_hour, timeinfo->tm_min, timeinfo->tm_sec);
+            char timeBuffer[25] = "";
+            strftime(timeBuffer, sizeof(timeBuffer), "%Y-%m-%d %H:%M:%S %Z", timeinfo);
+
+            Serial.printf_P(PSTR("Current time is %s\r\n"), timeBuffer);
         }
 
         void ntpUpdateCallback(struct timeval *newTime)
