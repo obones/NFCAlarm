@@ -1,6 +1,7 @@
 #include <IotWebConf.h>
 #include "config.h"
 #include "network.h"
+#include "status.h"
 
 namespace NFCAlarm
 {
@@ -75,7 +76,8 @@ namespace NFCAlarm
                 strftime(localTime, sizeof(localTime), "%Y-%m-%d %H:%M:%S %Z", &timeInfo);
 
             auto indexContent = new String((char*)&index_html_start[0]);
-            indexContent->replace(F("%cur_time%"), &localTime[0]);
+            indexContent->replace(F("%cur_time%"), localTime);
+            indexContent->replace(F("%alarm_state%"), Status::AlarmState);
 
             server.send(200, "text/html", indexContent->c_str());
         }
