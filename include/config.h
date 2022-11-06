@@ -15,6 +15,8 @@ namespace NFCAlarm
         extern char OpenHabServerName[OpenHabServerNameLength];
         extern char OpenHabAPIKey[OpenHabAPIKeyLength];
         extern char AlarmItemName[AlarmItemNameLength];
+
+        extern int RefreshPeriod;
     }
 }
 #endif

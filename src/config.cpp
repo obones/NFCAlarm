@@ -9,5 +9,7 @@ namespace NFCAlarm
         char OpenHabServerName[OpenHabServerNameLength] = "";
         char OpenHabAPIKey[OpenHabAPIKeyLength] = "";
         char AlarmItemName[AlarmItemNameLength] = "";
+
+        int RefreshPeriod = 10;
     }
 }
