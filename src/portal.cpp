@@ -64,7 +64,15 @@ namespace NFCAlarm
                 return;
             }
 
-            server.send(200, "text/html", (char*)&index_html_start[0]);
+            char localTime[25] = "Failed to obtain time";
+            struct tm timeInfo;
+            if (getLocalTime(&timeInfo))
+                strftime(localTime, sizeof(localTime), "%Y-%m-%d %H:%M:%S", &timeInfo);
+
+            auto indexContent = new String((char*)&index_html_start[0]);
+            indexContent->replace(F("%cur_time%"), &localTime[0]);
+
+            server.send(200, "text/html", indexContent->c_str());
         }
    }
 }
