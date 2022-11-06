@@ -8,7 +8,7 @@ namespace NFCAlarm
     namespace Status
     {
         extern struct timeval TimeAtBoot;
-        extern bool Connected = false;
+        extern bool Connected;
 
         void setup();
 
