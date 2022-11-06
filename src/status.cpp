@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include <esp32HTTPrequest.h>
 #include <ArduinoJson.h>
+#include <base64.h>
 
 #include "status.h"
 #include "config.h"
@@ -77,6 +78,14 @@ namespace NFCAlarm
                     request.onReadyStateChange(requestReadyStateChange, nullptr);
                     request.open("GET", url.c_str());
                     request.setReqHeader("accept", "application/json");
+                    if (Config::OpenHabAPIKey[0] != 0)
+                    {
+                        String userId = Config::OpenHabAPIKey;
+                        userId += ":";
+                        userId = base64::encode(userId);
+                        userId = "Basic " + userId;
+                        request.setReqHeader("Authorization", userId.c_str());
+                    }
                     request.send();
                 }
             }
