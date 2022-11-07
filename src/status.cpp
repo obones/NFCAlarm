@@ -108,29 +108,35 @@ namespace NFCAlarm
             {
                 previousMillis = millis();
 
-                Serial.println("Retrieving openHAB item status");
                 if (Config::OpenHabServerName[0] != 0 && Config::AlarmItemName[0] != 0)
                 {
+                    Serial.println("Retrieving openHAB item status");
+                    
                     esp32HTTPrequest request;
                     prepareRequest(request, "GET", itemRetrievalCallback);
                     request.send();
                 }
             }
-            
+
             static bool previousBellAsserted = false;
 
             if (BellAsserted ^ previousBellAsserted)
             {
                 previousBellAsserted = BellAsserted;
-                Serial.println("Bell has changed!");
 
-                if (previousBellAsserted)
+                static unsigned long previousBellAssertedMillis = 0;
+                if (millis() - previousBellAssertedMillis > 1000)  // debounce, at least 1 second between presses
                 {
-                    Serial.println("Bell has been pressed, activating alarm");
+                    previousBellAssertedMillis = millis();
 
-                    esp32HTTPrequest request;
-                    prepareRequest(request, "POST", nullptr);
-                    request.send("ON");
+                    if (previousBellAsserted)
+                    {
+                        Serial.println("Bell is pressed, activating alarm");
+
+                        esp32HTTPrequest request;
+                        prepareRequest(request, "POST", nullptr);
+                        request.send("ON");
+                    }
                 }
             }
         }
