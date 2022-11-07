@@ -2,6 +2,7 @@
 #define STATUS_H
 
 #include <time.h>
+#include <string>
 
 namespace NFCAlarm
 {
