@@ -16,7 +16,6 @@ namespace NFCAlarm
         bool Connected = false;
         String AlarmState = "Unknown";
 
-        unsigned long previousMillis = 0;
         volatile bool BellAsserted = false;
 
         void IRAM_ATTR bellPinISR() 
@@ -104,6 +103,7 @@ namespace NFCAlarm
 
         void loop()
         {
+            static unsigned long previousMillis = 0;
             if (Connected && (millis() - previousMillis > Config::RefreshPeriod * 1000))
             {
                 previousMillis = millis();
@@ -111,7 +111,7 @@ namespace NFCAlarm
                 if (Config::OpenHabServerName[0] != 0 && Config::AlarmItemName[0] != 0)
                 {
                     Serial.println("Retrieving openHAB item status");
-                    
+
                     esp32HTTPrequest request;
                     prepareRequest(request, "GET", itemRetrievalCallback);
                     request.send();
@@ -119,7 +119,6 @@ namespace NFCAlarm
             }
 
             static bool previousBellAsserted = false;
-
             if (BellAsserted ^ previousBellAsserted)
             {
                 previousBellAsserted = BellAsserted;
