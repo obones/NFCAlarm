@@ -7,6 +7,7 @@
 #include "config.h"
 
 #define BELL_PIN 27
+#define UNLOCK_PIN 26
 
 namespace NFCAlarm
 {
@@ -17,10 +18,15 @@ namespace NFCAlarm
         String AlarmState = "Unknown";
 
         volatile bool BellAsserted = false;
-
         void IRAM_ATTR bellPinISR() 
         {
             BellAsserted = (digitalRead(BELL_PIN) != 0);
+        }
+
+        volatile bool UnlockAsserted = false;
+        void IRAM_ATTR unlockPinISR()
+        {
+            UnlockAsserted = (digitalRead(UNLOCK_PIN) != 0);
         }
 
         void setup()
@@ -32,6 +38,9 @@ namespace NFCAlarm
 
             pinMode(BELL_PIN, INPUT_PULLUP);
             ::attachInterrupt(digitalPinToInterrupt(BELL_PIN), &bellPinISR, CHANGE);
+
+            pinMode(UNLOCK_PIN, INPUT);
+            ::attachInterrupt(digitalPinToInterrupt(UNLOCK_PIN), &unlockPinISR, CHANGE);
         }
 
         typedef void (*responseTextCallback)(String&);
@@ -101,6 +110,13 @@ namespace NFCAlarm
             }
         }
 
+        void setAlarmState(const char* state)
+        {
+            esp32HTTPrequest request;
+            prepareRequest(request, "POST", nullptr);
+            request.send(state);
+        }
+
         void loop()
         {
             static unsigned long previousMillis = 0;
@@ -131,11 +147,19 @@ namespace NFCAlarm
                     if (previousBellAsserted)
                     {
                         Serial.println("Bell is pressed, activating alarm");
-
-                        esp32HTTPrequest request;
-                        prepareRequest(request, "POST", nullptr);
-                        request.send("ON");
+                        setAlarmState("ON");
                     }
+                }
+            }
+
+            static bool previousUnlockAsserted = false;
+            if (UnlockAsserted ^ previousUnlockAsserted)
+            {
+                previousUnlockAsserted = UnlockAsserted;
+                if (previousUnlockAsserted)
+                {
+                    Serial.println("Unlock signaled, deactivating alarm");
+                    setAlarmState("OFF");
                 }
             }
         }
