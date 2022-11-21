@@ -39,7 +39,7 @@ namespace NFCAlarm
             pinMode(BELL_PIN, INPUT_PULLUP);
             ::attachInterrupt(digitalPinToInterrupt(BELL_PIN), &bellPinISR, CHANGE);
 
-            pinMode(UNLOCK_PIN, INPUT);
+            pinMode(UNLOCK_PIN, INPUT_PULLUP);
             ::attachInterrupt(digitalPinToInterrupt(UNLOCK_PIN), &unlockPinISR, CHANGE);
         }
 
