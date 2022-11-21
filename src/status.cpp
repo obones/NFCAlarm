@@ -20,13 +20,13 @@ namespace NFCAlarm
         volatile bool BellAsserted = false;
         void IRAM_ATTR bellPinISR() 
         {
-            BellAsserted = (digitalRead(BELL_PIN) != 0);
+            BellAsserted = (digitalRead(BELL_PIN) == 0);
         }
 
         volatile bool UnlockAsserted = false;
         void IRAM_ATTR unlockPinISR()
         {
-            UnlockAsserted = (digitalRead(UNLOCK_PIN) != 0);
+            UnlockAsserted = (digitalRead(UNLOCK_PIN) == 0);
         }
 
         void setup()
