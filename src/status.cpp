@@ -15,6 +15,7 @@ namespace NFCAlarm
     {
         struct timeval TimeAtBoot;
         bool Connected = false;
+        bool MustRefreshAlarmState = false;
         String AlarmState = "Unknown";
 
         volatile bool BellAsserted = false;
@@ -110,19 +111,25 @@ namespace NFCAlarm
             }
         }
 
+        void setAlarmStateCallback(String& responseText)
+        {
+            MustRefreshAlarmState = true;
+        }
+
         void setAlarmState(const char* state)
         {
             esp32HTTPrequest request;
-            prepareRequest(request, "POST", nullptr);
+            prepareRequest(request, "POST", setAlarmStateCallback);
             request.send(state);
         }
 
         void loop()
         {
             static unsigned long previousMillis = 0;
-            if (Connected && (millis() - previousMillis > Config::RefreshPeriod * 1000))
+            if (Connected && ((millis() - previousMillis > Config::RefreshPeriod * 1000) || MustRefreshAlarmState))
             {
                 previousMillis = millis();
+                MustRefreshAlarmState = false;
 
                 if (Config::OpenHabServerName[0] != 0 && Config::AlarmItemName[0] != 0)
                 {
