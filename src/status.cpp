@@ -8,6 +8,10 @@
 
 #define BELL_PIN 27
 #define UNLOCK_PIN 26
+#define ALARM_ON_LED_PIN 18
+#define ALARM_OFF_LED_PIN 19
+#define LED_ON 1
+#define LED_OFF 0
 
 namespace NFCAlarm
 {
@@ -42,6 +46,12 @@ namespace NFCAlarm
 
             pinMode(UNLOCK_PIN, INPUT_PULLUP);
             ::attachInterrupt(digitalPinToInterrupt(UNLOCK_PIN), &unlockPinISR, CHANGE);
+
+            pinMode(ALARM_ON_LED_PIN, OUTPUT);
+            digitalWrite(ALARM_ON_LED_PIN, LED_OFF);
+
+            pinMode(ALARM_OFF_LED_PIN, OUTPUT);
+            digitalWrite(ALARM_OFF_LED_PIN, LED_OFF);
         }
 
         typedef void (*responseTextCallback)(String&);
@@ -108,6 +118,22 @@ namespace NFCAlarm
                 AlarmState = root["state"].as<String>();
                 Serial.print("State is ");
                 Serial.println(AlarmState);
+
+                if (AlarmState == "ON")
+                {
+                    digitalWrite(ALARM_ON_LED_PIN, LED_ON);
+                    digitalWrite(ALARM_OFF_LED_PIN, LED_OFF);
+                }
+                else if (AlarmState == "OFF")
+                {
+                    digitalWrite(ALARM_ON_LED_PIN, LED_OFF);
+                    digitalWrite(ALARM_OFF_LED_PIN, LED_ON);
+                }
+                else
+                {
+                    digitalWrite(ALARM_ON_LED_PIN, LED_OFF);
+                    digitalWrite(ALARM_OFF_LED_PIN, LED_OFF);
+                }
             }
         }
 
