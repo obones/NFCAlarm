@@ -32,6 +32,7 @@ namespace NFCAlarm
         void setup()
         {
             // -- Setting up parameters
+            iotWebConf.getApTimeoutParameter()->visible = true;
             iotWebConf.addSystemParameter(&ntpServerName);
 
             openHabGroup.addItem(&openHabServerName);
