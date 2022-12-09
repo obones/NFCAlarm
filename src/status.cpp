@@ -189,10 +189,16 @@ namespace NFCAlarm
             if (UnlockAsserted ^ previousUnlockAsserted)
             {
                 previousUnlockAsserted = UnlockAsserted;
-                if (previousUnlockAsserted)
+                static unsigned long previousUnlockAssertedMillis = 0;
+                if (millis() - previousUnlockAssertedMillis > 1000)  // debounce, at least 1 second between presses
                 {
-                    Serial.println("Unlock signaled, deactivating alarm");
-                    setAlarmState("OFF");
+                    previousUnlockAssertedMillis = millis();
+
+                    if (previousUnlockAsserted)
+                    {
+                        Serial.println("Unlock signaled, deactivating alarm");
+                        setAlarmState("OFF");
+                    }
                 }
             }
         }
